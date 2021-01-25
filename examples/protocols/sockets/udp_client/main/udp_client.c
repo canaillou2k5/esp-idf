@@ -95,6 +95,17 @@ static void udp_client_task(void *pvParameters)
             }
             // Data received
             else {
+                
+                // Get the sender's ip address as string
+				if (source_addr.sin_family == PF_INET)
+				{
+					inet_ntoa_r(((struct sockaddr_in *)&source_addr)->sin_addr.s_addr, addr_str, sizeof(addr_str) - 1);
+				}
+				else if (source_addr.sin_family == PF_INET6)
+				{
+					inet6_ntoa_r(source_addr.sin_addr, addr_str, sizeof(addr_str) - 1);
+				}
+                
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                 ESP_LOGI(TAG, "%s", rx_buffer);
